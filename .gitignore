@@ -1,0 +1,12 @@
+#directories
+bower_components
+node_modules
+dist
+release-builds
+
+#files
+*.tgz
+*.log
+*.vscode
+*.7z
+package-lock.json
