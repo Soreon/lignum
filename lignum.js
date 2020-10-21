@@ -84,8 +84,8 @@ export default class Lignum {
     this.refreshAncestors(parent);
   }
 
-  generate(container, data) {
-    if (!Array.isArray(data)) throw new Error('Data is not an array');
+  generate(container, items) {
+    if (!Array.isArray(items)) throw new Error('Data is not an array');
     container.innerHTML = '';
     container.classList.add('lignum-container');
     const hasCheckbox = this.options && this.options.checkbox === true;
@@ -97,12 +97,12 @@ export default class Lignum {
     // + vertical dotted line
     const verticalDottedLine = document.createElement('div');
     verticalDottedLine.classList.add('lignum-node-vertical-dotted-line');
-
     container.appendChild(verticalDottedLine);
 
-    for (let i = 0; i < data.length; i += 1) {
-      const hasChildren = data[i].children && data[i].children.length > 0;
-      const hasImage = data[i].img && data[i].img.length > 0;
+    for (let i = 0; i < items.length; i += 1) {
+      const item = items[i];
+      const hasChildren = item.children && item.children.length > 0;
+      const hasImage = item.img && item.img.length > 0;
 
       // + horizontal dotted line
       const horizontalDottedLine = document.createElement('div');
@@ -119,7 +119,7 @@ export default class Lignum {
         chk = document.createElement('input');
         chk.type = 'checkbox';
         chk.classList.add('lignum-node-checkbox');
-        switch (data[i].checkboxState) {
+        switch (item.checkboxState) {
           case 'unchecked':
             chk.checked = false;
             break;
@@ -138,17 +138,22 @@ export default class Lignum {
       if (hasImage) {
         img = document.createElement('img');
         img.classList.add('lignum-node-img');
-        img.src = data[i].img;
+        img.src = item.img;
       }
 
       // Label
       const lbl = document.createElement('span');
       lbl.classList.add('lignum-node-label');
       if (!hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
-      lbl.innerText = data[i].name;
+      lbl.innerText = item.name;
 
+      // The node itself
       const bil = document.createElement('div');
       bil.classList.add('lignum-node-ui');
+      for (let j = 0; item.data && j < item.data.length; j += 1) {
+        const { key, value } = item.data[j];
+        bil.dataset[key] = value;
+      }
       if (!hasChildren) bil.classList.add('childless');
       bil.appendChild(horizontalDottedLine);
       if (hasChildren) bil.appendChild(btn);
@@ -159,20 +164,18 @@ export default class Lignum {
       // Container of the children
       const chl = document.createElement('div');
       chl.classList.add('lignum-node-children');
-      if (hasChildren) this.generate(chl, data[i].children);
-
+      if (hasChildren) this.generate(chl, item.children);
       const node = document.createElement('div');
       node.classList.add('lignum-node');
-      if (data[i].nodeState !== 'open') {
-        node.classList.add('close');
-      }
+      if (item.nodeState !== 'open') node.classList.add('close');
       node.appendChild(bil);
       if (hasChildren) node.appendChild(chl);
 
+      // Event listeners
       btn.addEventListener('click', (e) => {
         btn.innerText = btn.innerText === '+' ? '-' : '+';
         node.classList.toggle('close');
-        data[i].nodeState = node.classList.contains('close') ? 'close' : 'open';
+        item.nodeState = node.classList.contains('close') ? 'close' : 'open';
         Lignum.emitEvent(e.target, node.classList.contains('close') ? 'close' : 'open');
         Lignum.emitEvent(e.target, 'change');
       });
@@ -180,13 +183,13 @@ export default class Lignum {
       if (hasCheckbox) {
         chk.addEventListener('click', (e) => {
           if (e.target.indeterminate) {
-            data[i].checkboxState = 'indeterminate';
+            item.checkboxState = 'indeterminate';
             Lignum.emitEvent(e.target, 'indeterminate');
           } else if (e.target.checked) {
-            data[i].checkboxState = 'checked';
+            item.checkboxState = 'checked';
             Lignum.emitEvent(e.target, 'checked');
           } else {
-            data[i].checkboxState = 'unchecked';
+            item.checkboxState = 'unchecked';
             Lignum.emitEvent(e.target, 'unchecked');
           }
           Lignum.emitEvent(e.target, 'change');

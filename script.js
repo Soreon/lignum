@@ -4,6 +4,10 @@ const data = [
   {
     name: 'Test 1',
     img: 'https://lh3.googleusercontent.com/IeNJWoKYx1waOhfWF6TiuSiWBLfqLb18lmZYXSgsH1fvb8v1IYiZr5aYWe0Gxu-pVZX3',
+    data: [
+      { key: 'test1', value: 'dazudhaz' },
+      { key: 'test2', value: 321654 },
+    ],
     children: [
       {
         name: 'Test 1.1',
