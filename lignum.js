@@ -32,7 +32,7 @@ export default class Lignum {
   }
 
   constructor(container, options, data) {
-    this.container = container;
+    this.updateContainer(container);
     if (options) this.options = options;
     if (data) {
       this.data = data;
@@ -101,6 +101,13 @@ export default class Lignum {
       this.emitEvent(parentCheckbox, 'unchecked');
     }
     this.refreshAncestors(parent);
+  }
+
+  updateContainer(container) {
+    if (typeof container !== 'string') throw new Error('Wrong format for the container\'s id');
+    this.container = document.querySelector(container);
+    if (!this.container) throw new Error(`Cannot find the container ${container}`);
+    this.emitEvent(this.container, 'containerUpdated');
   }
 
   updateData(data) {
