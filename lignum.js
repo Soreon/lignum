@@ -54,16 +54,16 @@ export default class Lignum {
       const nodeCheckbox = node.querySelector('input[type=checkbox]');
       for (let i = 0; i < childrenCheckboxes.length; i += 1) {
         if (childrenCheckboxes[i].checked !== nodeCheckbox.checked || childrenCheckboxes[i].indeterminate !== false) {
-          Lignum.emitEvent(childrenCheckboxes[i], 'change');
+          this.emitEvent(childrenCheckboxes[i], 'change');
         }
         childrenCheckboxes[i].checked = nodeCheckbox.checked;
         childrenCheckboxes[i].indeterminate = false;
         if (childrenCheckboxes[i].indeterminate) {
-          Lignum.emitEvent(childrenCheckboxes[i], 'indeterminate');
+          this.emitEvent(childrenCheckboxes[i], 'indeterminate');
         } else if (childrenCheckboxes[i].checked) {
-          Lignum.emitEvent(childrenCheckboxes[i], 'checked');
+          this.emitEvent(childrenCheckboxes[i], 'checked');
         } else {
-          Lignum.emitEvent(childrenCheckboxes[i], 'unchecked');
+          this.emitEvent(childrenCheckboxes[i], 'unchecked');
         }
       }
     }
@@ -89,26 +89,28 @@ export default class Lignum {
     const indeterminate = atLeastOneIndeterminate || (!allChecked && atLeastOneChecked);
     const checked = allChecked;
     if (indeterminate !== parentCheckbox.indeterminate || checked !== parentCheckbox.checked) {
-      Lignum.emitEvent(parentCheckbox, 'change');
+      this.emitEvent(parentCheckbox, 'change');
     }
     parentCheckbox.indeterminate = indeterminate;
     parentCheckbox.checked = checked;
     if (indeterminate) {
-      Lignum.emitEvent(parentCheckbox, 'indeterminate');
+      this.emitEvent(parentCheckbox, 'indeterminate');
     } else if (checked) {
-      Lignum.emitEvent(parentCheckbox, 'checked');
+      this.emitEvent(parentCheckbox, 'checked');
     } else {
-      Lignum.emitEvent(parentCheckbox, 'unchecked');
+      this.emitEvent(parentCheckbox, 'unchecked');
     }
     this.refreshAncestors(parent);
   }
 
   updateData(data) {
     this.data = data;
+    this.emitEvent(this.container, 'dataUpdated');
   }
 
   refresh() {
     this.generate(this.container, this.data);
+    this.emitEvent(this.container, 'treeRefreshed');
   }
 
   generate(container, data) {
@@ -199,23 +201,23 @@ export default class Lignum {
         btn.innerText = btn.innerText === '+' ? '-' : '+';
         node.classList.toggle('close');
         item.nodeState = node.classList.contains('close') ? 'close' : 'open';
-        Lignum.emitEvent(e.target, node.classList.contains('close') ? 'close' : 'open');
-        Lignum.emitEvent(e.target, 'change');
+        this.emitEvent(e.target, node.classList.contains('close') ? 'close' : 'open');
+        this.emitEvent(e.target, 'change');
       });
 
       if (this.hasCheckbox) {
         chk.addEventListener('click', (e) => {
           if (e.target.indeterminate) {
             item.checkboxState = 'indeterminate';
-            Lignum.emitEvent(e.target, 'indeterminate');
+            this.emitEvent(e.target, 'indeterminate');
           } else if (e.target.checked) {
             item.checkboxState = 'checked';
-            Lignum.emitEvent(e.target, 'checked');
+            this.emitEvent(e.target, 'checked');
           } else {
             item.checkboxState = 'unchecked';
-            Lignum.emitEvent(e.target, 'unchecked');
+            this.emitEvent(e.target, 'unchecked');
           }
-          Lignum.emitEvent(e.target, 'change');
+          this.emitEvent(e.target, 'change');
           this.checkChildren(e.target.parentElement.parentElement);
         });
       }
