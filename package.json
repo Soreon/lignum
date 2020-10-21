@@ -1,0 +1,27 @@
+{
+  "name": "lignum",
+  "version": "1.0.0",
+  "description": "Javascript & CSS UI tree component",
+  "main": "lignum.min.js",
+  "dependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint": "^7.11.0",
+    "eslint-plugin-import": "^2.22.1",
+    "webpack": "^5.1.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Soreon/lignum.git"
+  },
+  "author": "Soreon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Soreon/lignum/issues"
+  },
+  "homepage": "https://github.com/Soreon/lignum#readme"
+}
