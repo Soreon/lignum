@@ -14,5 +14,7 @@ module.exports = {
     'max-len': 0,
     'no-console': 0,
     'no-param-reassign': ['error', { props: false }],
+    'class-methods-use-this': 0,
+    'no-bitwise': 0,
   },
 };

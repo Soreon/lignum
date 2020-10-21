@@ -6,7 +6,6 @@
  * }
  */
 
-/* eslint-disable no-bitwise */
 export default class Lignum {
   container = null;
 
@@ -14,11 +13,31 @@ export default class Lignum {
 
   options = null;
 
+  get hasCheckbox() {
+    return this.options && this.options.checkbox === true;
+  }
+
+  get onLabelClick() {
+    if (this.options && this.option) {
+      return this.options.labelClick;
+    }
+    return null;
+  }
+
+  get onImgClick() {
+    if (this.options && this.option) {
+      return this.options.imgClick;
+    }
+    return null;
+  }
+
   constructor(container, options, data) {
     this.container = container;
-    this.data = data;
-    this.options = options;
-    this.generate(this.container, this.data);
+    if (options) this.options = options;
+    if (data) {
+      this.data = data;
+      this.generate(this.container, this.data);
+    }
   }
 
   static emitEvent(element, eventName) {
@@ -84,23 +103,19 @@ export default class Lignum {
     this.refreshAncestors(parent);
   }
 
-  generate(container, items) {
-    if (!Array.isArray(items)) throw new Error('Data is not an array');
+  generate(container, data) {
+    if (!Array.isArray(data)) throw new Error('Data is not an array');
+
     container.innerHTML = '';
     container.classList.add('lignum-container');
-    const hasCheckbox = this.options && this.options.checkbox === true;
-    const labelClickToggleCheckbox = this.options && this.options.labelClick === 'toggleCheckbox';
-    const labelClickToggleWrap = this.options && this.options.labelClick === 'toggleWrap';
-    const imgClickToggleCheckbox = this.options && this.options.imgClick === 'toggleCheckbox';
-    const imgClickToggleWrap = this.options && this.options.imgClick === 'toggleWrap';
 
     // + vertical dotted line
     const verticalDottedLine = document.createElement('div');
     verticalDottedLine.classList.add('lignum-node-vertical-dotted-line');
     container.appendChild(verticalDottedLine);
 
-    for (let i = 0; i < items.length; i += 1) {
-      const item = items[i];
+    for (let i = 0; i < data.length; i += 1) {
+      const item = data[i];
       const hasChildren = item.children && item.children.length > 0;
       const hasImage = item.img && item.img.length > 0;
 
@@ -115,7 +130,7 @@ export default class Lignum {
 
       // Checkbox
       let chk = null;
-      if (hasCheckbox) {
+      if (this.hasCheckbox) {
         chk = document.createElement('input');
         chk.type = 'checkbox';
         chk.classList.add('lignum-node-checkbox');
@@ -144,7 +159,7 @@ export default class Lignum {
       // Label
       const lbl = document.createElement('span');
       lbl.classList.add('lignum-node-label');
-      if (!hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
+      if (!this.hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
       lbl.innerText = item.name;
 
       // The node itself
@@ -157,7 +172,7 @@ export default class Lignum {
       if (!hasChildren) bil.classList.add('childless');
       bil.appendChild(horizontalDottedLine);
       if (hasChildren) bil.appendChild(btn);
-      if (hasCheckbox) bil.appendChild(chk);
+      if (this.hasCheckbox) bil.appendChild(chk);
       if (hasImage) bil.appendChild(img);
       bil.appendChild(lbl);
 
@@ -180,7 +195,7 @@ export default class Lignum {
         Lignum.emitEvent(e.target, 'change');
       });
 
-      if (hasCheckbox) {
+      if (this.hasCheckbox) {
         chk.addEventListener('click', (e) => {
           if (e.target.indeterminate) {
             item.checkboxState = 'indeterminate';
@@ -198,18 +213,18 @@ export default class Lignum {
       }
 
       lbl.addEventListener('click', () => {
-        if (labelClickToggleCheckbox) {
+        if (this.onLabelClick === 'toggleCheckbox') {
           chk.click();
-        } else if (labelClickToggleWrap) {
+        } else if (this.onLabelClick === 'toggleWrap') {
           btn.click();
         }
       });
 
       if (hasImage) {
         img.addEventListener('click', () => {
-          if (imgClickToggleCheckbox) {
+          if (this.onImgClick === 'toggleCheckbox') {
             chk.click();
-          } else if (imgClickToggleWrap) {
+          } else if (this.onImgClick === 'toggleWrap') {
             btn.click();
           }
         });
