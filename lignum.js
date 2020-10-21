@@ -103,6 +103,10 @@ export default class Lignum {
     this.refreshAncestors(parent);
   }
 
+  refresh() {
+    this.generate(this.container, this.data);
+  }
+
   generate(container, data) {
     if (!Array.isArray(data)) throw new Error('Data is not an array');
 
