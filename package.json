@@ -5,14 +5,18 @@
   "main": "lignum.min.js",
   "dependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint-config-airbnb-base": "^14.2.0",
     "eslint": "^7.11.0",
+    "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.1",
+    "minify": "^6.0.0",
     "webpack": "^5.1.3"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "minifyjs": "minify lignum.js > lignum.min.js",
+    "minifycss": "minify lignum.css > lignum.min.css",
+    "minify": "npm run minifyjs && npm run minifycss"
   },
   "repository": {
     "type": "git",
