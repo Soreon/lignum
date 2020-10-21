@@ -103,6 +103,10 @@ export default class Lignum {
     this.refreshAncestors(parent);
   }
 
+  updateData(data) {
+    this.data = data;
+  }
+
   refresh() {
     this.generate(this.container, this.data);
   }
