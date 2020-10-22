@@ -181,6 +181,7 @@ export default class Lignum {
       // The node itself
       const bil = document.createElement('div');
       bil.classList.add('lignum-node-ui');
+      if (item.id) bil.id = item.id;
       for (let j = 0; item.data && j < item.data.length; j += 1) {
         const { key, value } = item.data[j];
         bil.dataset[key] = value;
