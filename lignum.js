@@ -1,5 +1,3 @@
-import './lignum.css';
-
 /**
  * options: {
  *  checkbox: false,
@@ -45,7 +43,6 @@ export default class Lignum {
   emitEvent(element, eventName) {
     const event = document.createEvent('HTMLEvents');
     event.initEvent(eventName, false, true);
-    console.log(eventName, element);
     element.dispatchEvent(event);
   }
 
