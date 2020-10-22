@@ -1,35 +1,10 @@
 {
   "name": "lignum",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Javascript & CSS UI tree component",
-  "files": [
-    "dist/*"
-  ],
   "private": true,
   "dependencies": {},
-  "devDependencies": {
-    "@babel/cli": "^7.12.1",
-    "@babel/core": "^7.12.3",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/preset-env": "^7.12.1",
-    "babel-loader": "^8.1.0",
-    "css-loader": "^5.0.0",
-    "css-minimizer-webpack-plugin": "^1.1.5",
-    "eslint": "^7.11.0",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.1",
-    "mini-css-extract-plugin": "^1.1.1",
-    "minify": "^6.0.0",
-    "optimize-css-assets-webpack-plugin": "^5.0.4",
-    "terser-webpack-plugin": "^4.2.3",
-    "webpack": "^4.44.2"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "minifyjs": "babel -o lignum.min.js --minified lignum.js",
-    "minifycss": "minify lignum.css > lignum.min.css",
-    "minify": "npm run minifyjs && npm run minifycss"
-  },
+  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Soreon/lignum.git"
