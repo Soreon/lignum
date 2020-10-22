@@ -2,7 +2,9 @@
   "name": "lignum",
   "version": "1.0.1",
   "description": "Javascript & CSS UI tree component",
-  "main": "./dist/lignum.min.js",
+  "files": [
+    "./dist"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@babel/cli": "^7.12.1",
