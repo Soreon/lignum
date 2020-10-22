@@ -1,4 +1,4 @@
-import Lignum from './lignum.js';
+import Lignum from './dist/lignum.min.js';
 
 const data = [
   {
