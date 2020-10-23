@@ -215,6 +215,10 @@ export default class Lignum {
       node.appendChild(bil);
       if (hasChildren) node.appendChild(chl);
 
+      // Set default ndoes states  
+      item.open = !!item.open;
+      item.checkboxState = item.checkboxState || 'checked';
+
       // Event listeners
       btn.addEventListener('click', (e) => {
         btn.innerText = btn.innerText === '+' ? '-' : '+';
