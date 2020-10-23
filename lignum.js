@@ -46,6 +46,10 @@ export default class Lignum {
     element.dispatchEvent(event);
   }
 
+  on(eventName, callback) {
+    this.container.addEventListener(eventName, callback);
+  }
+
   checkChildren(node) {
     const childrenContainer = node.querySelector('.lignum-node-children');
     if (childrenContainer) {
