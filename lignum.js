@@ -119,6 +119,11 @@ export default class Lignum {
     this.emitEvent(this.container, 'treeRefreshed');
   }
 
+  load(data) {
+    if (!this.container) throw new Error('The container is not set');
+    this.generate(this.container, data);
+  }
+
   generate(container, data) {
     if (!Array.isArray(data)) throw new Error('Data is not an array');
 
