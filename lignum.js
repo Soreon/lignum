@@ -184,9 +184,13 @@ export default class Lignum {
       const bil = document.createElement('div');
       bil.classList.add('lignum-node-ui');
       if (item.id) bil.id = item.id;
-      for (let j = 0; item.data && j < item.data.length; j += 1) {
-        const { key, value } = item.data[j];
-        bil.dataset[key] = value;
+
+      if (item.data) {
+        const keys = Object.keys(item.data);
+        for (let j = 0; j < keys.length; j += 1) {
+          const key = keys[j];
+          bil.dataset[keys[j]] = item.data[key];
+        }
       }
       if (!hasChildren) bil.classList.add('childless');
       bil.appendChild(horizontalDottedLine);
