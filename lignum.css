@@ -38,7 +38,7 @@
 
 .lignum-container .lignum-node .lignum-node-ui .lignum-node-button {
   background-color: #fff;
-  border: solid 1px #bfbfbf;
+  border: 1px solid #bfbfbf;
   border-radius: 2px;
   padding: 0;
   display: inline-block;
@@ -48,6 +48,10 @@
   line-height: var(--lignum-button-size);
   margin-right: var(--lignum-button-margin);
   z-index: 2;
+  font-size: var(--lignum-button-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .lignum-container .lignum-node .lignum-node-ui .lignum-node-label {
