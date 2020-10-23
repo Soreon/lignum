@@ -53,7 +53,7 @@ export default class Lignum {
       const nodeCheckbox = node.querySelector('input[type=checkbox]');
       for (let i = 0; i < childrenCheckboxes.length; i += 1) {
         if (childrenCheckboxes[i].checked !== nodeCheckbox.checked || childrenCheckboxes[i].indeterminate !== false) {
-          this.emitEvent(childrenCheckboxes[i], 'change');
+          this.emitEvent(childrenCheckboxes[i], 'stateChanged');
         }
         childrenCheckboxes[i].checked = nodeCheckbox.checked;
         childrenCheckboxes[i].indeterminate = false;
@@ -88,7 +88,7 @@ export default class Lignum {
     const indeterminate = atLeastOneIndeterminate || (!allChecked && atLeastOneChecked);
     const checked = allChecked;
     if (indeterminate !== parentCheckbox.indeterminate || checked !== parentCheckbox.checked) {
-      this.emitEvent(parentCheckbox, 'change');
+      this.emitEvent(parentCheckbox, 'stateChanged');
     }
     parentCheckbox.indeterminate = indeterminate;
     parentCheckbox.checked = checked;
@@ -220,12 +220,12 @@ export default class Lignum {
         node.classList.toggle('close');
         item.open = node.classList.contains('close');
         this.emitEvent(e.target, node.classList.contains('close') ? 'close' : 'open');
-        this.emitEvent(e.target, 'change');
-        this.emitEvent(this.container, 'change');
+        this.emitEvent(e.target, 'stateChanged');
+        this.emitEvent(this.container, 'stateChanged');
       });
 
       if (this.hasCheckbox) {
-        chk.addEventListener('click', (e) => {
+        chk.addEventListener('input', (e) => {
           if (e.target.indeterminate) {
             item.checkboxState = 'indeterminate';
             this.emitEvent(e.target, 'indeterminate');
@@ -236,8 +236,8 @@ export default class Lignum {
             item.checkboxState = 'unchecked';
             this.emitEvent(e.target, 'unchecked');
           }
-          this.emitEvent(e.target, 'change');
-          this.emitEvent(this.container, 'change');
+          this.emitEvent(e.target, 'stateChanged');
+          this.emitEvent(this.container, 'stateChanged');
           this.checkChildren(e.target.parentElement.parentElement);
         });
       }
