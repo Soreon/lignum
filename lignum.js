@@ -120,7 +120,7 @@ export default class Lignum {
 
   refresh() {
     if (!this.container) throw new Error('The container is not set');
-    if (!Array.isArray(data)) return false;
+    if (!Array.isArray(this.data)) return false;
     this.generate(this.container, this.data);
     this.emitEvent(this.container, 'treeRefreshed');
     return true;
