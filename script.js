@@ -56,6 +56,7 @@ const data = [
       { id: 'test2.9', name: 'Test 2.9', children: [] },
     ],
   },
+  { id: 'test3', name: 'Test 3', children: [] },
 ];
 
 const options = {

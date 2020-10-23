@@ -82,7 +82,7 @@
 }
 
 .lignum-container .lignum-node .lignum-node-children {
-  padding-top: var(--lignum-element-margin);
+  margin-top: var(--lignum-element-margin);
   padding-left: calc((var(--lignum-button-size) + var(--lignum-level-offset)) / 2);
   margin-left: calc((var(--lignum-button-size) / 2) + var(--lignum-node-padding));
 }
