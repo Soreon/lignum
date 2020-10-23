@@ -121,7 +121,8 @@ export default class Lignum {
 
   load(data) {
     if (!this.container) throw new Error('The container is not set');
-    this.generate(this.container, data);
+    this.data = data;
+    this.generate(this.container, this.data);
   }
 
   generate(container, data) {
