@@ -111,7 +111,7 @@ export default class Lignum {
 
   load(data) {
     this.data = data;
-    this.emitEvent(this.container, 'dataUpdated');
+    this.emitEvent(this.container, 'dataLoaded');
   }
 
   refresh() {
