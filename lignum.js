@@ -221,6 +221,7 @@ export default class Lignum {
         item.open = node.classList.contains('close');
         this.emitEvent(e.target, node.classList.contains('close') ? 'close' : 'open');
         this.emitEvent(e.target, 'change');
+        this.emitEvent(this.container, 'change');
       });
 
       if (this.hasCheckbox) {
@@ -236,6 +237,7 @@ export default class Lignum {
             this.emitEvent(e.target, 'unchecked');
           }
           this.emitEvent(e.target, 'change');
+          this.emitEvent(this.container, 'change');
           this.checkChildren(e.target.parentElement.parentElement);
         });
       }
