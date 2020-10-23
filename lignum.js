@@ -149,7 +149,7 @@ export default class Lignum {
       // + button
       const btn = document.createElement('button');
       btn.classList.add('lignum-node-button');
-      btn.innerText = '+';
+      btn.innerText = item.open ? '-':  '+';
 
       // Checkbox
       let chk = null;
@@ -210,7 +210,7 @@ export default class Lignum {
       if (hasChildren) this.generate(chl, item.children);
       const node = document.createElement('div');
       node.classList.add('lignum-node');
-      if (item.nodeState !== 'open') node.classList.add('close');
+      if (!item.open) node.classList.add('close');
       node.appendChild(bil);
       if (hasChildren) node.appendChild(chl);
 
@@ -218,7 +218,7 @@ export default class Lignum {
       btn.addEventListener('click', (e) => {
         btn.innerText = btn.innerText === '+' ? '-' : '+';
         node.classList.toggle('close');
-        item.nodeState = node.classList.contains('close') ? 'close' : 'open';
+        item.open = node.classList.contains('close');
         this.emitEvent(e.target, node.classList.contains('close') ? 'close' : 'open');
         this.emitEvent(e.target, 'change');
       });
