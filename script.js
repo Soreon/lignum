@@ -5,6 +5,8 @@ const data = [
     id: 'test1',
     name: 'TestTestTestTestTestTestTest 1',
     img: 'https://lh3.googleusercontent.com/IeNJWoKYx1waOhfWF6TiuSiWBLfqLb18lmZYXSgsH1fvb8v1IYiZr5aYWe0Gxu-pVZX3',
+    open: true,
+    checkboxState: 'unchecked',
     data: {
       test1: 'dazudhaz',
       test2: 321654
@@ -13,6 +15,7 @@ const data = [
       {
         id: 'test1.1',
         name: 'Test 1.1',
+        open: true,
         img: 'https://lh3.googleusercontent.com/IeNJWoKYx1waOhfWF6TiuSiWBLfqLb18lmZYXSgsH1fvb8v1IYiZr5aYWe0Gxu-pVZX3',
         children: [
           {
