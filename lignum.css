@@ -7,7 +7,7 @@
   --lignum-button-margin: 5px;
   --lignum-naked-label-margin: 3px;
   --lignum-level-offset: 5px;
-  --lignum-element-margin: 5px;
+  --lignum-element-margin: 10px;
   --lignum-node-padding: 2px;
   --lignum-childless-node-offset: 0px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -34,7 +34,7 @@
   align-items: center;
   height: max(var(--lignum-button-size), var(--lignum-label-size));
   line-height: max(var(--lignum-button-size), var(--lignum-label-size));
-  padding-right: var(--lignum-node-padding);
+  padding-left: var(--lignum-node-padding);
 }
 
 .lignum-container .lignum-node .lignum-node-ui.childless {
@@ -61,6 +61,8 @@
 
 .lignum-container .lignum-node .lignum-node-ui .lignum-node-label {
   flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .lignum-container .lignum-node .lignum-node-ui .lignum-node-img {
