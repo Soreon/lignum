@@ -34,7 +34,7 @@
   align-items: center;
   height: max(var(--lignum-button-size), var(--lignum-label-size));
   line-height: max(var(--lignum-button-size), var(--lignum-label-size));
-  padding: var(--lignum-node-padding);
+  padding-right: var(--lignum-node-padding);
 }
 
 .lignum-container .lignum-node .lignum-node-ui.childless {
@@ -65,7 +65,7 @@
 
 .lignum-container .lignum-node .lignum-node-ui .lignum-node-img {
   height: 100%;
-  margin-right: var(--lignum-element-margin);
+  margin-right: var(--lignum-button-margin);
 }
 
 .lignum-container .lignum-node .lignum-node-ui .lignum-node-naked-label {
