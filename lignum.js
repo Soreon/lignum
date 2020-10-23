@@ -135,6 +135,8 @@ export default class Lignum {
       const hasChildren = item.children && item.children.length > 0;
       const hasImage = item.img && item.img.length > 0;
 
+      if(item.hidden === true) continue;
+
       // + horizontal dotted line
       const horizontalDottedLine = document.createElement('div');
       horizontalDottedLine.classList.add('lignum-node-horizontal-dotted-line');

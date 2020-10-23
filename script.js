@@ -14,6 +14,7 @@ const data = [
         id: 'test1.1',
         name: 'Test 1.1',
         img: 'https://lh3.googleusercontent.com/IeNJWoKYx1waOhfWF6TiuSiWBLfqLb18lmZYXSgsH1fvb8v1IYiZr5aYWe0Gxu-pVZX3',
+        hidden: true,
         children: [
           {
             id: 'test1.1.1',
