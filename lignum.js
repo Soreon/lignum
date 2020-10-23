@@ -40,8 +40,8 @@ export default class Lignum {
     }
   }
 
-  emitEvent(element, eventName) {
-    const event = document.createEvent('HTMLEvents');
+  emitEvent(element, eventName, target) {
+    const event = new CustomEvent(eventName, { detail: { target } });
     event.initEvent(eventName, false, true);
     element.dispatchEvent(event);
   }
@@ -220,8 +220,7 @@ export default class Lignum {
         node.classList.toggle('close');
         item.open = node.classList.contains('close');
         this.emitEvent(e.target, node.classList.contains('close') ? 'close' : 'open');
-        this.emitEvent(e.target, 'stateChanged');
-        this.emitEvent(this.container, 'stateChanged');
+        this.emitEvent(this.container, 'stateChanged', e.target);
       });
 
       if (this.hasCheckbox) {
@@ -236,8 +235,7 @@ export default class Lignum {
             item.checkboxState = 'unchecked';
             this.emitEvent(e.target, 'unchecked');
           }
-          this.emitEvent(e.target, 'stateChanged');
-          this.emitEvent(this.container, 'stateChanged');
+          this.emitEvent(this.container, 'stateChanged', e.target);
           this.checkChildren(e.target.parentElement.parentElement);
         });
       }
@@ -248,7 +246,10 @@ export default class Lignum {
         } else if (this.onLabelClick === 'toggleWrap') {
           btn.click();
         }
+        this.emitEvent(this.container, 'nodeClicked');
       });
+
+      lbl.addEventListener('dblclick', () => { this.emitEvent(this.container, 'nodeDblClicked'); });
 
       if (hasImage) {
         img.addEventListener('click', () => {

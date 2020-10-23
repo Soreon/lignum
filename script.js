@@ -70,6 +70,6 @@ const options = {
 const lig = new Lignum('#container', options, data);
 
 const cont = document.querySelector('#container');
-cont.addEventListener('stateChanged', () => {
-  console.log('cont changed !');
+cont.addEventListener('stateChanged', (e) => {
+  console.log('cont changed !', e.detail.target);
 })
