@@ -109,20 +109,15 @@ export default class Lignum {
     this.emitEvent(this.container, 'containerUpdated');
   }
 
-  updateData(data) {
+  load(data) {
     this.data = data;
     this.emitEvent(this.container, 'dataUpdated');
   }
 
   refresh() {
+    if (!this.container) throw new Error('The container is not set');
     this.generate(this.container, this.data);
     this.emitEvent(this.container, 'treeRefreshed');
-  }
-
-  load(data) {
-    if (!this.container) throw new Error('The container is not set');
-    this.data = data;
-    this.generate(this.container, this.data);
   }
 
   generate(container, data) {
