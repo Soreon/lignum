@@ -142,7 +142,7 @@ export default class Lignum {
       const hasChildren = item.children && item.children.length > 0;
       const hasImage = item.img && item.img.length > 0;
 
-      if(item.hidden === true) continue;
+      if (item.hidden === true) continue;
 
       // + horizontal dotted line
       const horizontalDottedLine = document.createElement('div');
@@ -151,7 +151,7 @@ export default class Lignum {
       // + button
       const btn = document.createElement('button');
       btn.classList.add('lignum-node-button');
-      btn.innerText = item.open ? '-':  '+';
+      btn.innerText = item.open ? '-' : '+';
 
       // Checkbox
       let chk = null;
