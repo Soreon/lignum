@@ -226,7 +226,6 @@ export default class Lignum {
         const isClosed = node.classList.contains('close');
         btn.innerText = isClosed ? '+' : '-';
         item.open = !isClosed;
-        console.log(isClosed);
         this.emitEvent(e.target, isClosed ? 'close' : 'open');
         this.emitEvent(this.container, 'stateChanged', e.target);
       });
