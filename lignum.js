@@ -119,7 +119,7 @@ export default class Lignum {
       const item = {...data[i]};
       delete item.children;
       flattenedData.push(item);
-      if(data[i].children.length > 0) flattenedData = [...flattenedData ,...this.getFlattenedData(data[i].children)];
+      if(data[i].children && data[i].children.length > 0) flattenedData = [...flattenedData ,...this.getFlattenedData(data[i].children)];
     }
     return flattenedData;
   }
