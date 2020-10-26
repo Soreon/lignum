@@ -68,6 +68,7 @@ const options = {
 };
 
 const lig = new Lignum('#container', options, data);
+window.lig = lig;
 
 const cont = document.querySelector('#container');
 cont.addEventListener('stateChanged', (e) => {

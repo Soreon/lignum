@@ -222,10 +222,12 @@ export default class Lignum {
 
       // Event listeners
       btn.addEventListener('click', (e) => {
-        btn.innerText = btn.innerText === '+' ? '-' : '+';
         node.classList.toggle('close');
-        item.open = node.classList.contains('close');
-        this.emitEvent(e.target, node.classList.contains('close') ? 'close' : 'open');
+        const isClosed = node.classList.contains('close');
+        btn.innerText = isClosed ? '+' : '-';
+        item.open = !isClosed;
+        console.log(isClosed);
+        this.emitEvent(e.target, isClosed ? 'close' : 'open');
         this.emitEvent(this.container, 'stateChanged', e.target);
       });
 
