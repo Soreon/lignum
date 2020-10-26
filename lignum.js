@@ -113,6 +113,17 @@ export default class Lignum {
     this.emitEvent(this.container, 'containerUpdated');
   }
 
+  getFlattenedData(data = this.data) {
+    let flattenedData = [];
+    for (let i = 0; i < data.length; i += 1) {
+      const item = {...data[i]};
+      delete item.children;
+      flattenedData.push(item);
+      if(data[i].children.length > 0) flattenedData = [...flattenedData ,...this.getFlattenedData(data[i].children)];
+    }
+    return flattenedData;
+  }
+
   load(data) {
     this.data = data;
     this.emitEvent(this.container, 'dataLoaded');
