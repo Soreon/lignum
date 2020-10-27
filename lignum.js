@@ -264,7 +264,7 @@ export default class Lignum {
         } else if (this.onLabelClick === 'toggleWrap') {
           btn.click();
         }
-        this.emitEvent(this.container, 'nodeClicked');
+        this.emitEvent(this.container, 'nodeClicked', lbl);
       });
 
       lbl.addEventListener('dblclick', () => { this.emitEvent(this.container, 'nodeDblClicked', lbl); });
