@@ -267,7 +267,7 @@ export default class Lignum {
         this.emitEvent(this.container, 'nodeClicked');
       });
 
-      lbl.addEventListener('dblclick', () => { this.emitEvent(this.container, 'nodeDblClicked'); });
+      lbl.addEventListener('dblclick', () => { this.emitEvent(this.container, 'nodeDblClicked', lbl); });
 
       if (hasImage) {
         img.addEventListener('click', () => {
