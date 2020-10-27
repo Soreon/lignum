@@ -36,6 +36,7 @@ export default class Lignum {
     if (options) this.options = options;
     if (data) {
       this.data = data;
+      this.addDataParents(this.data);
       this.generate(this.container, this.data);
     }
   }
@@ -50,8 +51,9 @@ export default class Lignum {
     this.container.addEventListener(type, listener, ...args);
   }
 
-  checkChildren(node) {
+  checkChildren(node, item) {
     const childrenContainer = node.querySelector('.lignum-node-children');
+    const children = item.children;
     if (childrenContainer) {
       const childrenCheckboxes = childrenContainer.querySelectorAll('input[type=checkbox]');
       const nodeCheckbox = node.querySelector('input[type=checkbox]');
@@ -70,10 +72,16 @@ export default class Lignum {
         }
       }
     }
-    this.refreshAncestors(node);
+    if (children) {
+      for (let i = 0; i < children.length; i += 1) {
+        children[i].checked = item.checked;
+        children[i].indeterminate = false;
+      }
+    }
+    this.refreshAncestors(node, item);
   }
 
-  refreshAncestors(node) {
+  refreshAncestors(node, item) {
     const parent = node.parentNode.parentNode;
     if (!parent.classList.contains('lignum-node')) return;
     const parentCheckbox = parent.querySelector('input[type=checkbox]');
@@ -96,6 +104,9 @@ export default class Lignum {
     }
     parentCheckbox.indeterminate = indeterminate;
     parentCheckbox.checked = checked;
+    item.parent.indeterminate = indeterminate;
+    item.parent.checked = checked;
+
     if (indeterminate) {
       this.emitEvent(parentCheckbox, 'indeterminate');
     } else if (checked) {
@@ -113,13 +124,26 @@ export default class Lignum {
     this.emitEvent(this.container, 'containerUpdated');
   }
 
+  addItemsParents(node) {
+    for (let i = 0; node.children && i < node.children.length; i += 1) {
+      node.children[i].parent = node;
+      this.addItemsParents(node.children[i]);
+    }
+  }
+
+  addDataParents(data) {
+    for (let i = 0; i < data.length; i+=1) {
+      this.addItemsParents(data[i]);
+    }
+  }
+
   getFlattenedData(data = this.data) {
     let flattenedData = [];
     for (let i = 0; i < data.length; i += 1) {
-      const item = {...data[i]};
+      const item = { ...data[i] };
       delete item.children;
       flattenedData.push(item);
-      if(data[i].children && data[i].children.length > 0) flattenedData = [...flattenedData ,...this.getFlattenedData(data[i].children)];
+      if (data[i].children && data[i].children.length > 0) flattenedData = [...flattenedData, ...this.getFlattenedData(data[i].children)];
     }
     return flattenedData;
   }
@@ -132,6 +156,7 @@ export default class Lignum {
   refresh() {
     if (!this.container) throw new Error('The container is not set');
     if (!Array.isArray(this.data)) return false;
+    this.addDataParents(this.data);
     this.generate(this.container, this.data);
     this.emitEvent(this.container, 'treeRefreshed');
     return true;
@@ -254,7 +279,7 @@ export default class Lignum {
             this.emitEvent(e.target, 'unchecked');
           }
           this.emitEvent(this.container, 'stateChanged', e.target);
-          this.checkChildren(e.target.parentElement.parentElement);
+          this.checkChildren(e.target.parentElement.parentElement, item);
         });
       }
 
