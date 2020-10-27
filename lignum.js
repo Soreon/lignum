@@ -150,6 +150,7 @@ export default class Lignum {
 
   load(data) {
     this.data = data;
+    this.addDataParents(this.data);
     this.emitEvent(this.container, 'dataLoaded');
   }
 
