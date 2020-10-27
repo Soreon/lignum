@@ -73,7 +73,7 @@ export default class Lignum {
     }
     if (item.children) {
       for (let i = 0; i < item.children.length; i += 1) {
-        item.children[i].checked = item.checked;
+        item.children[i].checkboxState = item.checkboxState;
         item.children[i].indeterminate = false;
       }
     }
@@ -103,15 +103,16 @@ export default class Lignum {
     }
     parentCheckbox.indeterminate = indeterminate;
     parentCheckbox.checked = checked;
-    item.parent.indeterminate = indeterminate;
-    item.parent.checked = checked;
-
+    
     if (indeterminate) {
       this.emitEvent(parentCheckbox, 'indeterminate');
+      item.parent.checkboxState = 'indeterminate';
     } else if (checked) {
       this.emitEvent(parentCheckbox, 'checked');
+      item.parent.checkboxState = 'checked';
     } else {
       this.emitEvent(parentCheckbox, 'unchecked');
+      item.parent.checkboxState = 'unchecked';
     }
     this.refreshAncestors(parent);
   }
