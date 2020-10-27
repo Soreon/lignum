@@ -65,6 +65,10 @@
   white-space: nowrap;
 }
 
+.lignum-container .lignum-node .lignum-node-ui .lignum-node-label br {
+  display: none;
+}
+
 .lignum-container .lignum-node .lignum-node-ui .lignum-node-img {
   height: 100%;
   margin-right: var(--lignum-button-margin);
