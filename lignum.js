@@ -53,7 +53,6 @@ export default class Lignum {
 
   checkChildren(node, item) {
     const childrenContainer = node.querySelector('.lignum-node-children');
-    const children = item.children;
     if (childrenContainer) {
       const childrenCheckboxes = childrenContainer.querySelectorAll('input[type=checkbox]');
       const nodeCheckbox = node.querySelector('input[type=checkbox]');
@@ -72,10 +71,10 @@ export default class Lignum {
         }
       }
     }
-    if (children) {
-      for (let i = 0; i < children.length; i += 1) {
-        children[i].checked = item.checked;
-        children[i].indeterminate = false;
+    if (item.children) {
+      for (let i = 0; i < item.children.length; i += 1) {
+        item.children[i].checked = item.checked;
+        item.children[i].indeterminate = false;
       }
     }
     this.refreshAncestors(node, item);
