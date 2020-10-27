@@ -46,8 +46,8 @@ export default class Lignum {
     element.dispatchEvent(event);
   }
 
-  on(eventName, callback) {
-    this.container.addEventListener(eventName, callback);
+  on(type, listener, ...args) {
+    this.container.addEventListener(type, listener, ...args);
   }
 
   checkChildren(node) {
