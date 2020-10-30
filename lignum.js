@@ -279,8 +279,8 @@ export default class Lignum {
             item.checkboxState = 'unchecked';
             this.emitEvent(e.target, 'unchecked');
           }
-          this.emitEvent(this.container, 'stateChanged', e.target);
           this.checkChildren(e.target.parentElement.parentElement, item);
+          this.emitEvent(this.container, 'stateChanged', e.target);
         });
       }
 
