@@ -56,7 +56,7 @@ export default class Lignum {
       for (let i = 0; i < item.children.length; i += 1) {
         item.children[i].checkboxState = item.checkboxState;
         item.children[i].indeterminate = false;
-        if(item.children[i].checkbox) item.children[i].checkbox.checked = item.checkboxState === 'checked';
+        if (item.children[i].checkbox) item.children[i].checkbox.checked = item.checkboxState === 'checked';
       }
       for (let i = 0; i < item.children.length; i += 1) {
         this.checkChildren(item.children[i]);
@@ -89,7 +89,7 @@ export default class Lignum {
 
     parent.checkbox.indeterminate = indeterminate;
     parent.checkbox.checked = checked;
-    
+
     if (indeterminate) {
       this.emitEvent(parent.checkbox, 'indeterminate');
       parent.checkboxState = 'indeterminate';
@@ -101,6 +101,16 @@ export default class Lignum {
       parent.checkboxState = 'unchecked';
     }
     this.refreshAncestors(parent);
+  }
+
+  findNode(id, data = this.data) {
+    for (let i = 0; i < data.length; i += 1) {
+      if(data[i].id === id) return data[i];
+      let childFound = null;
+      if(data[i].children) childFound = this.findNode(id, data[i].children);
+      if(childFound) return childFound;
+    }
+    return null;
   }
 
   updateContainer(container) {
@@ -118,7 +128,7 @@ export default class Lignum {
   }
 
   addDataParents(data) {
-    for (let i = 0; i < data.length; i+=1) {
+    for (let i = 0; i < data.length; i += 1) {
       this.addItemsParents(data[i]);
     }
   }
