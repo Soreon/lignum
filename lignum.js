@@ -51,68 +51,54 @@ export default class Lignum {
     this.container.addEventListener(type, listener, ...args);
   }
 
-  checkChildren(node, item) {
-    const childrenContainer = node.querySelector('.lignum-node-children');
-    if (childrenContainer) {
-      const childrenCheckboxes = childrenContainer.querySelectorAll('input[type=checkbox]');
-      const nodeCheckbox = node.querySelector('input[type=checkbox]');
-      for (let i = 0; i < childrenCheckboxes.length; i += 1) {
-        if (childrenCheckboxes[i].checked !== nodeCheckbox.checked || childrenCheckboxes[i].indeterminate !== false) {
-          this.emitEvent(childrenCheckboxes[i], 'stateChanged');
-        }
-        childrenCheckboxes[i].checked = nodeCheckbox.checked;
-        childrenCheckboxes[i].indeterminate = false;
-        if (childrenCheckboxes[i].indeterminate) {
-          this.emitEvent(childrenCheckboxes[i], 'indeterminate');
-        } else if (childrenCheckboxes[i].checked) {
-          this.emitEvent(childrenCheckboxes[i], 'checked');
-        } else {
-          this.emitEvent(childrenCheckboxes[i], 'unchecked');
-        }
-      }
-    }
+  checkChildren(item) {
     if (item.children) {
       for (let i = 0; i < item.children.length; i += 1) {
         item.children[i].checkboxState = item.checkboxState;
         item.children[i].indeterminate = false;
+        if(item.children[i].checkbox) item.children[i].checkbox.checked = item.checkboxState === 'checked';
+      }
+      for (let i = 0; i < item.children.length; i += 1) {
+        this.checkChildren(item.children[i]);
       }
     }
-    this.refreshAncestors(node, item);
+    this.refreshAncestors(item);
   }
 
-  refreshAncestors(node, item) {
-    const parent = node.parentNode.parentNode;
-    if (!parent.classList.contains('lignum-node')) return;
-    const parentCheckbox = parent.querySelector('input[type=checkbox]');
-    const childrenContainer = parent.querySelector('.lignum-node-children');
-    const children = childrenContainer.querySelectorAll(':scope .lignum-node');
+  refreshAncestors(item) {
+    const parent = item.parent;
+    if (!parent) return false;
+    const siblings = parent.children;
+
     let allChecked = true;
     let atLeastOneChecked = false;
     let atLeastOneIndeterminate = false;
 
-    for (let i = 0; i < children.length; i += 1) {
-      const childCheckbox = children[i].querySelector('input[type=checkbox]');
+    for (let i = 0; i < siblings.length; i += 1) {
+      const childCheckbox = siblings[i].checkbox;
+      if (siblings[i].hidden) continue;
       allChecked &= childCheckbox.checked;
       atLeastOneChecked |= childCheckbox.checked;
       atLeastOneIndeterminate |= childCheckbox.indeterminate;
     }
+
     const indeterminate = atLeastOneIndeterminate || (!allChecked && atLeastOneChecked);
     const checked = allChecked;
-    if (indeterminate !== parentCheckbox.indeterminate || checked !== parentCheckbox.checked) {
-      this.emitEvent(parentCheckbox, 'stateChanged');
-    }
-    parentCheckbox.indeterminate = indeterminate;
-    parentCheckbox.checked = checked;
+
+    if (indeterminate !== parent.checkbox.indeterminate || checked !== parent.checkbox.checked) this.emitEvent(parent.checkbox, 'stateChanged');
+
+    parent.checkbox.indeterminate = indeterminate;
+    parent.checkbox.checked = checked;
     
     if (indeterminate) {
-      this.emitEvent(parentCheckbox, 'indeterminate');
-      item.parent.checkboxState = 'indeterminate';
+      this.emitEvent(parent.checkbox, 'indeterminate');
+      parent.checkboxState = 'indeterminate';
     } else if (checked) {
-      this.emitEvent(parentCheckbox, 'checked');
-      item.parent.checkboxState = 'checked';
+      this.emitEvent(parent.checkbox, 'checked');
+      parent.checkboxState = 'checked';
     } else {
-      this.emitEvent(parentCheckbox, 'unchecked');
-      item.parent.checkboxState = 'unchecked';
+      this.emitEvent(parent.checkbox, 'unchecked');
+      parent.checkboxState = 'unchecked';
     }
     this.refreshAncestors(parent);
   }
@@ -208,6 +194,7 @@ export default class Lignum {
             chk.checked = true;
             break;
         }
+        item.checkbox = chk;
       }
 
       // image
@@ -227,6 +214,7 @@ export default class Lignum {
       // The node itself
       const bil = document.createElement('div');
       bil.classList.add('lignum-node-ui');
+      item.node = bil;
       if (item.id) bil.id = item.id;
 
       if (item.data) {
@@ -279,7 +267,7 @@ export default class Lignum {
             item.checkboxState = 'unchecked';
             this.emitEvent(e.target, 'unchecked');
           }
-          this.checkChildren(e.target.parentElement.parentElement, item);
+          this.checkChildren(item);
           this.emitEvent(this.container, 'stateChanged', e.target);
         });
       }
