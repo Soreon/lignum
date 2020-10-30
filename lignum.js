@@ -103,11 +103,11 @@ export default class Lignum {
     this.refreshAncestors(parent);
   }
 
-  findNode(id, data = this.data) {
+  findItem(id, data = this.data) {
     for (let i = 0; i < data.length; i += 1) {
       if(data[i].id === id) return data[i];
       let childFound = null;
-      if(data[i].children) childFound = this.findNode(id, data[i].children);
+      if(data[i].children) childFound = this.findItem(id, data[i].children);
       if(childFound) return childFound;
     }
     return null;
@@ -153,7 +153,6 @@ export default class Lignum {
   refresh() {
     if (!this.container) throw new Error('The container is not set');
     if (!Array.isArray(this.data)) return false;
-    this.addDataParents(this.data);
     this.generate(this.container, this.data);
     this.emitEvent(this.container, 'treeRefreshed');
     return true;
