@@ -159,11 +159,146 @@ export default class Lignum {
     return true;
   }
 
+  generateItem(container, item) {
+    const hasChildren = item.children && item.children.length > 0;
+    const hasImage = item.img && item.img.length > 0;
+
+    if (item.hidden === true) return;
+
+    // + horizontal dotted line
+    const horizontalDottedLine = document.createElement('div');
+    horizontalDottedLine.classList.add('lignum-node-horizontal-dotted-line');
+
+    // + button
+    const btn = document.createElement('button');
+    btn.classList.add('lignum-node-button');
+    btn.innerText = item.open ? '-' : '+';
+
+    // Checkbox
+    let chk = null;
+    if (this.hasCheckbox) {
+      chk = document.createElement('input');
+      chk.type = 'checkbox';
+      chk.classList.add('lignum-node-checkbox');
+      switch (item.checkboxState) {
+        case 'unchecked':
+          chk.checked = false;
+          break;
+        case 'indeterminate':
+          chk.indeterminate = true;
+          break;
+        case 'checked':
+        default:
+          chk.checked = true;
+          break;
+      }
+      item.checkbox = chk;
+    }
+
+    // image
+    let img = null;
+    if (hasImage) {
+      img = document.createElement('img');
+      img.classList.add('lignum-node-img');
+      img.src = item.img;
+    }
+
+    // Label
+    const lbl = document.createElement('span');
+    lbl.classList.add('lignum-node-label');
+    if (!this.hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
+    lbl.innerText = item.name;
+
+    // The node itself
+    const bil = document.createElement('div');
+    bil.classList.add('lignum-node-ui');
+    item.node = bil;
+    if (item.id) bil.id = item.id;
+
+    if (item.data) {
+      const keys = Object.keys(item.data);
+      for (let j = 0; j < keys.length; j += 1) {
+        const key = keys[j];
+        bil.dataset[keys[j]] = item.data[key];
+      }
+    }
+    if (!hasChildren) bil.classList.add('childless');
+    bil.appendChild(horizontalDottedLine);
+    if (hasChildren) bil.appendChild(btn);
+    if (this.hasCheckbox) bil.appendChild(chk);
+    if (hasImage) bil.appendChild(img);
+    bil.appendChild(lbl);
+
+    // Container of the children
+    const chl = document.createElement('div');
+    chl.classList.add('lignum-node-children');
+    if (hasChildren) this.generate(chl, item.children);
+    const node = document.createElement('div');
+    node.classList.add('lignum-node');
+    if (!item.open) node.classList.add('close');
+    node.appendChild(bil);
+    if (hasChildren) node.appendChild(chl);
+
+    // Set default ndoes states  
+    item.open = !!item.open;
+    item.checkboxState = item.checkboxState || 'checked';
+
+    // Event listeners
+    btn.addEventListener('click', (e) => {
+      node.classList.toggle('close');
+      const isClosed = node.classList.contains('close');
+      btn.innerText = isClosed ? '+' : '-';
+      item.open = !isClosed;
+      this.emitEvent(isClosed ? 'nodeClosed' : 'nodeOpen', e.target);
+      this.emitEvent('stateChanged', e.target);
+    });
+
+    if (this.hasCheckbox) {
+      chk.addEventListener('input', (e) => {
+        if (e.target.indeterminate) {
+          item.checkboxState = 'indeterminate';
+          this.emitEvent('checkboxIndeterminate', e.target);
+        } else if (e.target.checked) {
+          item.checkboxState = 'checked';
+          this.emitEvent('checkboxChecked', e.target);
+        } else {
+          item.checkboxState = 'unchecked';
+          this.emitEvent('checkboxUnchecked', e.target);
+        }
+        this.checkChildren(item);
+        this.emitEvent('stateChanged', e.target);
+      });
+    }
+
+    lbl.addEventListener('click', () => {
+      if (this.onLabelClick === 'toggleCheckbox') {
+        chk.click();
+      } else if (this.onLabelClick === 'toggleWrap') {
+        btn.click();
+      }
+      this.emitEvent('nodeClicked', lbl);
+    });
+
+    lbl.addEventListener('dblclick', () => { this.emitEvent('nodeDblClicked', lbl); });
+
+    if (hasImage) {
+      img.addEventListener('click', () => {
+        if (this.onImgClick === 'toggleCheckbox') {
+          chk.click();
+        } else if (this.onImgClick === 'toggleWrap') {
+          btn.click();
+        }
+      });
+    }
+
+    container.appendChild(node);
+  }
+
   generate(container, data) {
     if (!Array.isArray(data)) throw new Error('Data is not an array');
 
     container.innerHTML = '';
-    container.classList.add('lignum-container');
+    if(!container.classList.contains('lignum-container')) container.classList.add('lignum-container');
 
     // + vertical dotted line
     const verticalDottedLine = document.createElement('div');
@@ -171,139 +306,7 @@ export default class Lignum {
     container.appendChild(verticalDottedLine);
 
     for (let i = 0; i < data.length; i += 1) {
-      const item = data[i];
-      const hasChildren = item.children && item.children.length > 0;
-      const hasImage = item.img && item.img.length > 0;
-
-      if (item.hidden === true) continue;
-
-      // + horizontal dotted line
-      const horizontalDottedLine = document.createElement('div');
-      horizontalDottedLine.classList.add('lignum-node-horizontal-dotted-line');
-
-      // + button
-      const btn = document.createElement('button');
-      btn.classList.add('lignum-node-button');
-      btn.innerText = item.open ? '-' : '+';
-
-      // Checkbox
-      let chk = null;
-      if (this.hasCheckbox) {
-        chk = document.createElement('input');
-        chk.type = 'checkbox';
-        chk.classList.add('lignum-node-checkbox');
-        switch (item.checkboxState) {
-          case 'unchecked':
-            chk.checked = false;
-            break;
-          case 'indeterminate':
-            chk.indeterminate = true;
-            break;
-          case 'checked':
-          default:
-            chk.checked = true;
-            break;
-        }
-        item.checkbox = chk;
-      }
-
-      // image
-      let img = null;
-      if (hasImage) {
-        img = document.createElement('img');
-        img.classList.add('lignum-node-img');
-        img.src = item.img;
-      }
-
-      // Label
-      const lbl = document.createElement('span');
-      lbl.classList.add('lignum-node-label');
-      if (!this.hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
-      lbl.innerText = item.name;
-
-      // The node itself
-      const bil = document.createElement('div');
-      bil.classList.add('lignum-node-ui');
-      item.node = bil;
-      if (item.id) bil.id = item.id;
-
-      if (item.data) {
-        const keys = Object.keys(item.data);
-        for (let j = 0; j < keys.length; j += 1) {
-          const key = keys[j];
-          bil.dataset[keys[j]] = item.data[key];
-        }
-      }
-      if (!hasChildren) bil.classList.add('childless');
-      bil.appendChild(horizontalDottedLine);
-      if (hasChildren) bil.appendChild(btn);
-      if (this.hasCheckbox) bil.appendChild(chk);
-      if (hasImage) bil.appendChild(img);
-      bil.appendChild(lbl);
-
-      // Container of the children
-      const chl = document.createElement('div');
-      chl.classList.add('lignum-node-children');
-      if (hasChildren) this.generate(chl, item.children);
-      const node = document.createElement('div');
-      node.classList.add('lignum-node');
-      if (!item.open) node.classList.add('close');
-      node.appendChild(bil);
-      if (hasChildren) node.appendChild(chl);
-
-      // Set default ndoes states  
-      item.open = !!item.open;
-      item.checkboxState = item.checkboxState || 'checked';
-
-      // Event listeners
-      btn.addEventListener('click', (e) => {
-        node.classList.toggle('close');
-        const isClosed = node.classList.contains('close');
-        btn.innerText = isClosed ? '+' : '-';
-        item.open = !isClosed;
-        this.emitEvent(isClosed ? 'nodeClosed' : 'nodeOpen', e.target);
-        this.emitEvent('stateChanged', e.target);
-      });
-
-      if (this.hasCheckbox) {
-        chk.addEventListener('input', (e) => {
-          if (e.target.indeterminate) {
-            item.checkboxState = 'indeterminate';
-            this.emitEvent('checkboxIndeterminate', e.target);
-          } else if (e.target.checked) {
-            item.checkboxState = 'checked';
-            this.emitEvent('checkboxChecked', e.target);
-          } else {
-            item.checkboxState = 'unchecked';
-            this.emitEvent('checkboxUnchecked', e.target);
-          }
-          this.checkChildren(item);
-          this.emitEvent('stateChanged', e.target);
-        });
-      }
-
-      lbl.addEventListener('click', () => {
-        if (this.onLabelClick === 'toggleCheckbox') {
-          chk.click();
-        } else if (this.onLabelClick === 'toggleWrap') {
-          btn.click();
-        }
-        this.emitEvent('nodeClicked', lbl);
-      });
-
-      lbl.addEventListener('dblclick', () => { this.emitEvent('nodeDblClicked', lbl); });
-
-      if (hasImage) {
-        img.addEventListener('click', () => {
-          if (this.onImgClick === 'toggleCheckbox') {
-            chk.click();
-          } else if (this.onImgClick === 'toggleWrap') {
-            btn.click();
-          }
-        });
-      }
-
-      container.appendChild(node);
+      this.generateItem(container, data[i]);
     }
   }
 }
