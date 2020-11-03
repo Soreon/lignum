@@ -100,22 +100,20 @@ export default class Lignum {
 
     const indeterminate = atLeastOneIndeterminate || (!allChecked && atLeastOneChecked);
     const checked = allChecked;
-    const stateChanged = indeterminate !== parent.checkbox.indeterminate || checked !== parent.checkbox.checked;
-
-    if (stateChanged) this.emitEvent('stateChanged', parent.checkbox);
+    const stateHasChanged = indeterminate !== parent.checkbox.indeterminate || checked !== parent.checkbox.checked;
 
     parent.checkbox.indeterminate = indeterminate;
     parent.checkbox.checked = checked;
 
     if (indeterminate) {
       parent.checkboxState = 'indeterminate';
-      if (stateChanged) this.emitEvent('checkboxIndeterminate', parent.checkbox);
+      if (stateHasChanged) this.emitEvent('checkboxIndeterminate', parent.checkbox);
     } else if (checked) {
       parent.checkboxState = 'checked';
-      if (stateChanged) this.emitEvent('checkboxChecked', parent.checkbox);
+      if (stateHasChanged) this.emitEvent('checkboxChecked', parent.checkbox);
     } else {
       parent.checkboxState = 'unchecked';
-      if (stateChanged) this.emitEvent('checkboxUnchecked', parent.checkbox);
+      if (stateHasChanged) this.emitEvent('checkboxUnchecked', parent.checkbox);
     }
     this.refreshAncestors(parent);
   }
