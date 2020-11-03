@@ -1,4 +1,17 @@
 /**
+ * data: {
+ *  id: string,
+ *  name: string,
+ *  img: URL,
+ *  open: true|false,
+ *  checkboxState: 'checked' | 'unchecked'| 'indeterminate',
+ *  data: {
+ *    test1: 'dazudhaz',
+ *    test2: 321654
+ *  },
+ *  children: []
+ *}
+ * 
  * options: {
  *  checkbox: false,
  *  labelClick: 'toggleCheckbox' | 'toggleWrap' | null
@@ -54,11 +67,12 @@ export default class Lignum {
   checkChildren(item) {
     if (item.children) {
       for (let i = 0; i < item.children.length; i += 1) {
+        if (!item.children[i].checkbox) continue;
         if (item.children[i].checkboxState !== item.checkboxState) {
-          this.emitEvent(item.checkboxState === 'checked' ? 'checkboxChecked' : 'checkboxUnchecked', parent.checkbox);
+          this.emitEvent(item.checkboxState === 'checked' ? 'checkboxChecked' : 'checkboxUnchecked', item.children[i].checkbox);
         }
         item.children[i].checkboxState = item.checkboxState;
-        if (item.children[i].checkbox) item.children[i].checkbox.checked = item.checkboxState === 'checked';
+        item.children[i].checkbox.checked = item.checkboxState === 'checked';
       }
       for (let i = 0; i < item.children.length; i += 1) {
         this.checkChildren(item.children[i]);
@@ -123,16 +137,16 @@ export default class Lignum {
     this.emitEvent('containerUpdated', this.container);
   }
 
-  addItemsParents(node) {
-    for (let i = 0; node.children && i < node.children.length; i += 1) {
-      node.children[i].parent = node;
-      this.addItemsParents(node.children[i]);
+  addItemsParent(item) {
+    for (let i = 0; item.children && i < item.children.length; i += 1) {
+      item.children[i].parent = item;
+      this.addItemsParent(item.children[i]);
     }
   }
 
   addDataParents(data) {
     for (let i = 0; i < data.length; i += 1) {
-      this.addItemsParents(data[i]);
+      this.addItemsParent(data[i]);
     }
   }
 
