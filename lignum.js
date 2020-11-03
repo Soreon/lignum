@@ -54,8 +54,10 @@ export default class Lignum {
   checkChildren(item) {
     if (item.children) {
       for (let i = 0; i < item.children.length; i += 1) {
+        if (item.children[i].checkboxState !== item.checkboxState) {
+          this.emitEvent(item.checkboxState === 'checked' ? 'checkboxChecked' : 'checkboxUnchecked', parent.checkbox);
+        }
         item.children[i].checkboxState = item.checkboxState;
-        item.children[i].indeterminate = false;
         if (item.children[i].checkbox) item.children[i].checkbox.checked = item.checkboxState === 'checked';
       }
       for (let i = 0; i < item.children.length; i += 1) {
