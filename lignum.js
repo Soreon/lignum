@@ -41,10 +41,10 @@ export default class Lignum {
     }
   }
 
-  emitEvent(element, eventName, target) {
+  emitEvent(eventName, target) {
     const event = new CustomEvent(eventName, { detail: { target } });
     event.initEvent(eventName, false, true);
-    element.dispatchEvent(event);
+    this.container.dispatchEvent(event);
   }
 
   on(type, listener, ...args) {
@@ -84,21 +84,22 @@ export default class Lignum {
 
     const indeterminate = atLeastOneIndeterminate || (!allChecked && atLeastOneChecked);
     const checked = allChecked;
+    const stateChanged = indeterminate !== parent.checkbox.indeterminate || checked !== parent.checkbox.checked;
 
-    if (indeterminate !== parent.checkbox.indeterminate || checked !== parent.checkbox.checked) this.emitEvent(parent.checkbox, 'stateChanged');
+    if (stateChanged) this.emitEvent('stateChanged', parent.checkbox);
 
     parent.checkbox.indeterminate = indeterminate;
     parent.checkbox.checked = checked;
 
     if (indeterminate) {
-      this.emitEvent(parent.checkbox, 'indeterminate');
       parent.checkboxState = 'indeterminate';
+      if (stateChanged) this.emitEvent('checkboxIndeterminate', parent.checkbox);
     } else if (checked) {
-      this.emitEvent(parent.checkbox, 'checked');
       parent.checkboxState = 'checked';
+      if (stateChanged) this.emitEvent('checkboxChecked', parent.checkbox);
     } else {
-      this.emitEvent(parent.checkbox, 'unchecked');
       parent.checkboxState = 'unchecked';
+      if (stateChanged) this.emitEvent('checkboxUnchecked', parent.checkbox);
     }
     this.refreshAncestors(parent);
   }
@@ -117,7 +118,7 @@ export default class Lignum {
     if (typeof container !== 'string') throw new Error('Wrong format for the container\'s id');
     this.container = document.querySelector(container);
     if (!this.container) throw new Error(`Cannot find the container ${container}`);
-    this.emitEvent(this.container, 'containerUpdated');
+    this.emitEvent('containerUpdated', this.container);
   }
 
   addItemsParents(node) {
@@ -147,14 +148,14 @@ export default class Lignum {
   load(data) {
     this.data = data;
     this.addDataParents(this.data);
-    this.emitEvent(this.container, 'dataLoaded');
+    this.emitEvent('dataLoaded', this.container);
   }
 
   refresh() {
     if (!this.container) throw new Error('The container is not set');
     if (!Array.isArray(this.data)) return false;
     this.generate(this.container, this.data);
-    this.emitEvent(this.container, 'treeRefreshed');
+    this.emitEvent('treeRefreshed', this.container);
     return true;
   }
 
@@ -260,24 +261,24 @@ export default class Lignum {
         const isClosed = node.classList.contains('close');
         btn.innerText = isClosed ? '+' : '-';
         item.open = !isClosed;
-        this.emitEvent(e.target, isClosed ? 'close' : 'open');
-        this.emitEvent(this.container, 'stateChanged', e.target);
+        this.emitEvent(isClosed ? 'nodeClosed' : 'nodeOpen', e.target);
+        this.emitEvent('stateChanged', e.target);
       });
 
       if (this.hasCheckbox) {
         chk.addEventListener('input', (e) => {
           if (e.target.indeterminate) {
             item.checkboxState = 'indeterminate';
-            this.emitEvent(e.target, 'indeterminate');
+            this.emitEvent('checkboxIndeterminate', e.target);
           } else if (e.target.checked) {
             item.checkboxState = 'checked';
-            this.emitEvent(e.target, 'checked');
+            this.emitEvent('checkboxChecked', e.target);
           } else {
             item.checkboxState = 'unchecked';
-            this.emitEvent(e.target, 'unchecked');
+            this.emitEvent('checkboxUnchecked', e.target);
           }
           this.checkChildren(item);
-          this.emitEvent(this.container, 'stateChanged', e.target);
+          this.emitEvent('stateChanged', e.target);
         });
       }
 
@@ -287,10 +288,10 @@ export default class Lignum {
         } else if (this.onLabelClick === 'toggleWrap') {
           btn.click();
         }
-        this.emitEvent(this.container, 'nodeClicked', lbl);
+        this.emitEvent('nodeClicked', lbl);
       });
 
-      lbl.addEventListener('dblclick', () => { this.emitEvent(this.container, 'nodeDblClicked', lbl); });
+      lbl.addEventListener('dblclick', () => { this.emitEvent('nodeDblClicked', lbl); });
 
       if (hasImage) {
         img.addEventListener('click', () => {
