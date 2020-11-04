@@ -200,9 +200,9 @@ export default class Lignum {
   }
 
   generateItem(container, item) {
-    const numberOfChildren = item.children.length;
+    const numberOfChildren = item.children ? item.children.length : 0;
     const numberOfHiddenChildren = item.children.filter(e => e.hidden).length;
-    const hasChildren = item.children && numberOfChildren > 0 && numberOfHiddenChildren !== numberOfChildren;
+    const hasChildren = numberOfChildren > 0 && numberOfHiddenChildren !== numberOfChildren;
     const hasImage = item.img && item.img.length > 0;
 
     if (item.hidden === true) return;
