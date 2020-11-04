@@ -95,6 +95,7 @@ const data = [
 const options = {
   checkbox: true,
   labelClick: 'toggleWrap',
+  disableButtonIfAllChildrenHidden: true,
 };
 
 const lig = new Lignum('#container', options, data);
