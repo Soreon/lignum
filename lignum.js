@@ -21,10 +21,17 @@
 
 export default class Lignum {
   container = null;
-
   data = null;
-
   options = null;
+  _horizontalDottedLine = null;
+  _nodeButton = null;
+  _nodeCheckbox = null;
+  _nodeChildrenContainer = null;
+  _nodeContainer = null;
+  _nodeElementsContainer = null;
+  _nodeImage = null;
+  _nodeLabel = null;
+  _verticalDottedLine = null;
 
   get hasCheckbox() {
     return this.options && this.options.checkbox === true;
@@ -44,7 +51,28 @@ export default class Lignum {
     return null;
   }
 
+  createElement(tagName, className, type) {
+    const element = document.createElement(tagName);
+    element.classList.add(className);
+    if (type) element.type = type;
+    return element;
+  }
+
+  // Create the base elements to be cloned when a tree is generated
+  createBaseElements() {
+    this._horizontalDottedLine = this.createElement('div', 'lignum-node-horizontal-dotted-line');
+    this._nodeButton = this.createElement('button', 'lignum-node-button');
+    this._nodeCheckbox = this.createElement('input', 'lignum-node-checkbox', 'checkbox');
+    this._nodeChildrenContainer = this.createElement('div', 'lignum-node-children');
+    this._nodeContainer = this.createElement('div', 'lignum-node');
+    this._nodeElementsContainer = this.createElement('div', 'lignum-node-ui');
+    this._nodeImage = this.createElement('img', 'lignum-node-img');
+    this._nodeLabel = this.createElement('span', 'lignum-node-label');
+    this._verticalDottedLine = this.createElement('div', 'lignum-node-vertical-dotted-line');
+  }
+
   constructor(container, options, data) {
+    this.createBaseElements();
     this.updateContainer(container);
     if (options) this.options = options;
     if (data) {
@@ -180,20 +208,16 @@ export default class Lignum {
     if (item.hidden === true) return;
 
     // + horizontal dotted line
-    const horizontalDottedLine = document.createElement('div');
-    horizontalDottedLine.classList.add('lignum-node-horizontal-dotted-line');
+    const horizontalDottedLine = this._horizontalDottedLine.cloneNode()
 
     // + button
-    const btn = document.createElement('button');
-    btn.classList.add('lignum-node-button');
+    const btn = this._nodeButton.cloneNode();
     btn.innerText = item.open ? '-' : '+';
 
     // Checkbox
     let chk = null;
     if (this.hasCheckbox) {
-      chk = document.createElement('input');
-      chk.type = 'checkbox';
-      chk.classList.add('lignum-node-checkbox');
+      chk = this._nodeCheckbox.cloneNode();
       switch (item.checkboxState) {
         case 'unchecked':
           chk.checked = false;
@@ -212,46 +236,43 @@ export default class Lignum {
     // image
     let img = null;
     if (hasImage) {
-      img = document.createElement('img');
-      img.classList.add('lignum-node-img');
+      img = this._nodeImage.cloneNode();
       img.src = item.img;
     }
 
     // Label
-    const lbl = document.createElement('span');
-    lbl.classList.add('lignum-node-label');
+    const lbl = this._nodeLabel.cloneNode();
     if (!this.hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
     lbl.innerText = item.name;
 
     // The node itself
-    const bil = document.createElement('div');
-    bil.classList.add('lignum-node-ui');
-    item.node = bil;
-    if (item.id) bil.id = item.id;
+    const bcil = this._nodeElementsContainer.cloneNode();
+    item.node = bcil;
+    if (item.id) bcil.id = item.id;
 
     if (item.data) {
       const keys = Object.keys(item.data);
       for (let j = 0; j < keys.length; j += 1) {
         const key = keys[j];
-        bil.dataset[keys[j]] = item.data[key];
+        bcil.dataset[keys[j]] = item.data[key];
       }
     }
-    if (!hasChildren) bil.classList.add('childless');
-    bil.appendChild(horizontalDottedLine);
-    if (hasChildren) bil.appendChild(btn);
-    if (this.hasCheckbox) bil.appendChild(chk);
-    if (hasImage) bil.appendChild(img);
-    bil.appendChild(lbl);
+    if (!hasChildren) bcil.classList.add('childless');
+    bcil.appendChild(horizontalDottedLine);
+    if (hasChildren) bcil.appendChild(btn);
+    if (this.hasCheckbox) bcil.appendChild(chk);
+    if (hasImage) bcil.appendChild(img);
+    bcil.appendChild(lbl);
 
     // Container of the children
-    const chl = document.createElement('div');
-    chl.classList.add('lignum-node-children');
+    const chl = this._nodeChildrenContainer.cloneNode();
     if (hasChildren) this.generate(chl, item.children);
-    const node = document.createElement('div');
-    node.classList.add('lignum-node');
-    if (!item.open) node.classList.add('close');
-    node.appendChild(bil);
-    if (hasChildren) node.appendChild(chl);
+
+    // Container of node & children container
+    const bilChlCont = this._nodeContainer.cloneNode();
+    if (!item.open) bilChlCont.classList.add('close');
+    bilChlCont.appendChild(bcil);
+    if (hasChildren) bilChlCont.appendChild(chl);
 
     // Set default ndoes states  
     item.open = !!item.open;
@@ -259,8 +280,8 @@ export default class Lignum {
 
     // Event listeners
     btn.addEventListener('click', (e) => {
-      node.classList.toggle('close');
-      const isClosed = node.classList.contains('close');
+      bilChlCont.classList.toggle('close');
+      const isClosed = bilChlCont.classList.contains('close');
       btn.innerText = isClosed ? '+' : '-';
       item.open = !isClosed;
       this.emitEvent(isClosed ? 'nodeClosed' : 'nodeOpen', e.target);
@@ -305,7 +326,7 @@ export default class Lignum {
       });
     }
 
-    container.appendChild(node);
+    container.appendChild(bilChlCont);
   }
 
   generate(container, data) {
@@ -315,8 +336,7 @@ export default class Lignum {
     if(!container.classList.contains('lignum-container')) container.classList.add('lignum-container');
 
     // + vertical dotted line
-    const verticalDottedLine = document.createElement('div');
-    verticalDottedLine.classList.add('lignum-node-vertical-dotted-line');
+    const verticalDottedLine = this._verticalDottedLine.cloneNode();
     container.appendChild(verticalDottedLine);
 
     for (let i = 0; i < data.length; i += 1) {
