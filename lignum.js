@@ -257,7 +257,7 @@ export default class Lignum {
     // Label
     const lbl = this._nodeLabel.cloneNode();
     if (!this.hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
-    lbl.innerText = item.name;
+    lbl.innerHTML = item.name;
 
     // The node itself
     const bcil = this._nodeElementsContainer.cloneNode();
