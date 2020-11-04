@@ -185,6 +185,18 @@ export default class Lignum {
     return flattenedData;
   }
 
+  getLeaves(data = this.data) {
+    let leaves = [];
+    for (let i = 0; i < data.length; i += 1) {
+      if (!data[i].children || data[i].children.length === 0) {
+        leaves.push(data[i]);
+      } else {
+        leaves = [...leaves, ...this.getLeaves(data[i].children)];
+      }
+    }
+    return leaves;
+  }
+
   load(data) {
     this.data = data;
     this.addDataParents(this.data);
