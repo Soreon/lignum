@@ -16,7 +16,6 @@
  *  checkbox: false,
  *  labelClick: 'toggleCheckbox' | 'toggleWrap' | null
  *  imgClick: 'toggleCheckbox' | 'toggleWrap' | null
- *  disableButtonIfAllChildrenHidden: false
  * }
  */
 
@@ -214,8 +213,8 @@ export default class Lignum {
 
     // + button
     const btn = this._nodeButton.cloneNode();
-    btn.innerText = item.open ? '-' : '+';
-    if (allChildrenHidden && this.options.disableButtonIfAllChildrenHidden) btn.disabled = true;
+    btn.innerText = item.open && !allChildrenHidden ? '-' : '+';
+    if (allChildrenHidden) btn.disabled = true;
 
     // Checkbox
     let chk = null;
@@ -273,7 +272,7 @@ export default class Lignum {
 
     // Container of node & children container
     const bilChlCont = this._nodeContainer.cloneNode();
-    if (!item.open) bilChlCont.classList.add('close');
+    if (!item.open || allChildrenHidden) bilChlCont.classList.add('close');
     bilChlCont.appendChild(bcil);
     if (hasChildren) bilChlCont.appendChild(chl);
 

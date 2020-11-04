@@ -30,7 +30,7 @@ const data = [
               { id: 'test1.1.1.6', name: 'Test 1.1.1.6', children: [], img: 'https://lh3.googleusercontent.com/IeNJWoKYx1waOhfWF6TiuSiWBLfqLb18lmZYXSgsH1fvb8v1IYiZr5aYWe0Gxu-pVZX3' },
             ],
           },
-          { id: 'test1.1.2', name: 'Test 1.1.2', children: [
+          { id: 'test1.1.2', name: 'Test 1.1.2', open: true, children: [
             { id: 'test1.1.2.1', hidden: true, name: 'Test 1.1.2.1', children: [] },
             { id: 'test1.1.2.2', hidden: true, name: 'Test 1.1.2.2', children: [] },
             { id: 'test1.1.2.3', hidden: true, name: 'Test 1.1.2.3', children: [] },
