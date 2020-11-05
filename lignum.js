@@ -103,6 +103,7 @@ export default class Lignum {
         item.children[i].checkbox.checked = item.checkboxState === 'checked';
       }
       for (let i = 0; i < item.children.length; i += 1) {
+        if (!item.children[i].checkbox) continue;
         this.checkChildren(item.children[i]);
       }
     }
