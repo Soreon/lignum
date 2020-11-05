@@ -99,6 +99,7 @@ export default class Lignum {
     item.checkbox.indeterminate = indeterminate;
     if (refreshChild) this.checkChildren(item);
     if (refreshAncestors) this.refreshAncestors(item);
+    this.emitEvent('stateChanged', e.target);
   }
 
   checkChildren(item) {
