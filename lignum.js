@@ -92,6 +92,14 @@ export default class Lignum {
     this.container.addEventListener(type, listener, ...args);
   }
 
+  checkItem(item, value, indeterminate = false, refreshChild = false) {
+    item.checkboxState = value ? 'checked' : 'unchecked';
+    if (indeterminate) item.checkboxState = 'indeterminate';
+    item.checkbox.checked = value;
+    item.checkbox.indeterminate = indeterminate;
+    if (refreshChild) this.checkChildren(item);
+  }
+
   checkChildren(item) {
     if (item.children) {
       for (let i = 0; i < item.children.length; i += 1) {
@@ -99,8 +107,7 @@ export default class Lignum {
         if (item.children[i].checkboxState !== item.checkboxState) {
           this.emitEvent(item.checkboxState === 'checked' ? 'checkboxChecked' : 'checkboxUnchecked', item.children[i].checkbox);
         }
-        item.children[i].checkboxState = item.checkboxState;
-        item.children[i].checkbox.checked = item.checkboxState === 'checked';
+        this.checkItem(item.children[i], item.checkboxState === 'checked');
       }
       for (let i = 0; i < item.children.length; i += 1) {
         if (!item.children[i].checkbox) continue;
@@ -131,18 +138,15 @@ export default class Lignum {
     const checked = allChecked;
     const stateHasChanged = indeterminate !== parent.checkbox.indeterminate || checked !== parent.checkbox.checked;
 
-    parent.checkbox.indeterminate = indeterminate;
-    parent.checkbox.checked = checked;
-
-    if (indeterminate) {
-      parent.checkboxState = 'indeterminate';
-      if (stateHasChanged) this.emitEvent('checkboxIndeterminate', parent.checkbox);
-    } else if (checked) {
-      parent.checkboxState = 'checked';
-      if (stateHasChanged) this.emitEvent('checkboxChecked', parent.checkbox);
-    } else {
-      parent.checkboxState = 'unchecked';
-      if (stateHasChanged) this.emitEvent('checkboxUnchecked', parent.checkbox);
+    this.checkItem(parent, checked, indeterminate);
+    if (stateHasChanged) {
+      if (indeterminate) {
+        this.emitEvent('checkboxIndeterminate', parent.checkbox);
+      } else if (checked) {
+        this.emitEvent('checkboxChecked', parent.checkbox);
+      } else {
+        this.emitEvent('checkboxUnchecked', parent.checkbox);
+      }
     }
     this.refreshAncestors(parent);
   }
