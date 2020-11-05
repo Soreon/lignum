@@ -92,12 +92,13 @@ export default class Lignum {
     this.container.addEventListener(type, listener, ...args);
   }
 
-  checkItem(item, value, indeterminate = false, refreshChild = false) {
+  checkItem(item, value, indeterminate = false, refreshChild = false, refreshAncestors = false) {
     item.checkboxState = value ? 'checked' : 'unchecked';
     if (indeterminate) item.checkboxState = 'indeterminate';
     item.checkbox.checked = value;
     item.checkbox.indeterminate = indeterminate;
     if (refreshChild) this.checkChildren(item);
+    if (refreshAncestors) this.refreshAncestors(item);
   }
 
   checkChildren(item) {
@@ -114,7 +115,6 @@ export default class Lignum {
         this.checkChildren(item.children[i]);
       }
     }
-    this.refreshAncestors(item);
   }
 
   refreshAncestors(item) {
@@ -320,6 +320,7 @@ export default class Lignum {
           this.emitEvent('checkboxUnchecked', e.target);
         }
         this.checkChildren(item);
+        this.refreshAncestors(item);
         this.emitEvent('stateChanged', e.target);
       });
     }
