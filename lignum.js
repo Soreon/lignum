@@ -223,6 +223,7 @@ export default class Lignum {
     const allChildrenHidden = numberOfHiddenChildren === numberOfChildren
     const hasChildren = numberOfChildren > 0;
     const hasImage = item.img && item.img.length > 0;
+    const hasCheckbox = this.hasCheckbox && !item.hideCheckbox;
 
     if (item.hidden === true) return;
 
@@ -236,7 +237,7 @@ export default class Lignum {
 
     // Checkbox
     let chk = null;
-    if (this.hasCheckbox) {
+    if (hasCheckbox) {
       chk = this._nodeCheckbox.cloneNode();
       switch (item.checkboxState) {
         case 'unchecked':
@@ -262,7 +263,7 @@ export default class Lignum {
 
     // Label
     const lbl = this._nodeLabel.cloneNode();
-    if (!this.hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
+    if (!hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
     lbl.innerHTML = item.name;
 
     // The node itself
@@ -280,7 +281,7 @@ export default class Lignum {
     if (!hasChildren) bcil.classList.add('childless');
     bcil.appendChild(horizontalDottedLine);
     if (hasChildren) bcil.appendChild(btn);
-    if (this.hasCheckbox) bcil.appendChild(chk);
+    if (hasCheckbox) bcil.appendChild(chk);
     if (hasImage) bcil.appendChild(img);
     bcil.appendChild(lbl);
 
@@ -308,7 +309,7 @@ export default class Lignum {
       this.emitEvent('stateChanged', e.target);
     });
 
-    if (this.hasCheckbox) {
+    if (hasCheckbox) {
       chk.addEventListener('input', (e) => {
         if (e.target.indeterminate) {
           item.checkboxState = 'indeterminate';
