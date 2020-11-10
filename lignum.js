@@ -38,7 +38,7 @@ export default class Lignum {
   }
 
   get onLabelClick() {
-    if (this.options && this.option) {
+    if (this.options && this.options.labelClick) {
       return this.options.labelClick;
     }
     return null;
