@@ -68,6 +68,7 @@ export default class Lignum {
     this._nodeElementsContainer = this.createElement('div', 'lignum-node-ui');
     this._nodeImage = this.createElement('img', 'lignum-node-img');
     this._nodeLabel = this.createElement('span', 'lignum-node-label');
+    this._nodeLabelText = this.createElement('span', 'lignum-node-label-text');
     this._verticalDottedLine = this.createElement('div', 'lignum-node-vertical-dotted-line');
   }
 
@@ -154,10 +155,10 @@ export default class Lignum {
 
   findItem(id, data = this.data) {
     for (let i = 0; i < data.length; i += 1) {
-      if(data[i].id === id) return data[i];
+      if (data[i].id === id) return data[i];
       let childFound = null;
-      if(data[i].children) childFound = this.findItem(id, data[i].children);
-      if(childFound) return childFound;
+      if (data[i].children) childFound = this.findItem(id, data[i].children);
+      if (childFound) return childFound;
     }
     return null;
   }
@@ -263,8 +264,23 @@ export default class Lignum {
 
     // Label
     const lbl = this._nodeLabel.cloneNode();
+    const lblTxt = this._nodeLabelText.cloneNode();
     if (!hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
-    lbl.innerHTML = item.name;
+    lblTxt.innerHTML = item.name;
+    lbl.appendChild(lblTxt);
+    lblTxt.addEventListener('mouseover', (e) => {
+      const diff = lbl.getBoundingClientRect().width - lblTxt.getBoundingClientRect().width;
+      if (diff < 0) {
+        const marginLeft = diff - 10;
+        const duration = Math.abs(marginLeft / 60);
+        lblTxt.style.transitionDuration = `${duration}s`;
+        lblTxt.style.marginLeft = `${marginLeft}px`;
+        console.log(marginLeft, duration, marginLeft / duration);
+      }
+    });
+    lbl.addEventListener('mouseleave', (e) => {
+      lblTxt.style.marginLeft = '0px';
+    });
 
     // The node itself
     const bcil = this._nodeElementsContainer.cloneNode();
@@ -355,7 +371,7 @@ export default class Lignum {
     if (!Array.isArray(data)) throw new Error('Data is not an array');
 
     container.innerHTML = '';
-    if(!container.classList.contains('lignum-container')) container.classList.add('lignum-container');
+    if (!container.classList.contains('lignum-container')) container.classList.add('lignum-container');
 
     // + vertical dotted line
     const verticalDottedLine = this._verticalDottedLine.cloneNode();

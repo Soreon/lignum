@@ -63,6 +63,14 @@
   flex: 1;
   overflow: hidden;
   white-space: nowrap;
+  display: inline-block ;
+
+}
+
+.lignum-container .lignum-node .lignum-node-ui .lignum-node-label-text {
+  margin-left: 0;
+  display: inline-block ;
+  transition-timing-function: linear;
 }
 
 .lignum-container .lignum-node .lignum-node-ui .lignum-node-label br {
