@@ -268,18 +268,19 @@ export default class Lignum {
     if (!hasCheckbox && !hasChildren) lbl.classList.add('lignum-node-naked-label');
     lblTxt.innerHTML = item.name;
     lbl.appendChild(lblTxt);
+    const diff = lbl.getBoundingClientRect().width - lblTxt.getBoundingClientRect().width;
     lblTxt.addEventListener('mouseover', (e) => {
-      const diff = lbl.getBoundingClientRect().width - lblTxt.getBoundingClientRect().width;
       if (diff < 0) {
         const marginLeft = diff - 10;
         const duration = Math.abs(marginLeft / 60);
+        lblTxt.style.willChange = 'margin';
         lblTxt.style.transitionDuration = `${duration}s`;
         lblTxt.style.marginLeft = `${marginLeft}px`;
-        console.log(marginLeft, duration, marginLeft / duration);
       }
     });
     lbl.addEventListener('mouseleave', (e) => {
       lblTxt.style.marginLeft = '0px';
+      lblTxt.style.willChange = 'auto';
     });
 
     // The node itself
